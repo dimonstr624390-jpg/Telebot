@@ -5,9 +5,13 @@ import schedule
 import random
 from logic import gen_pass, ran_em, cflip
 
-bot = telebot.TeleBot("")
+bot = telebot.TeleBot("TOKEN GOES HERE")
 
 @bot.message_handler(commands=['start'])
+def send_hello(message):
+    bot.reply_to(message, "Привет! Для большей онформации введите команду /list или /help.")
+
+@bot.message_handler(commands=['list', 'help'])
 def send_welcome(message):
     bot.reply_to(message, '''
 Команды: 
@@ -47,7 +51,6 @@ def send_timer_help(message):
     bot.reply_to(message, "Привет! Используй /set <seconds> , чтобы создать таймер.")
 
 def beep(chat_id) -> None:
-    """Send the beep message."""
     bot.send_message(chat_id, text='Таймер сработал!')
 
 @bot.message_handler(commands=['set'])
@@ -70,13 +73,11 @@ def echo_all(message):
     bot.reply_to(message, message.text)
 
 def schedule_runner():
-    """Функция для запуска планировщика в отдельном потоке"""
     while True:
         schedule.run_pending()
         time.sleep(1)
 
 if __name__ == '__main__':
-    # Запускаем планировщик в отдельном потоке
     scheduler_thread = threading.Thread(target=schedule_runner, daemon=True)
     scheduler_thread.start()
     
